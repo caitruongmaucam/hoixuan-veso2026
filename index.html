@@ -82,21 +82,72 @@
                     <p>Nội dung CK: <b>Tên - số lượng vé - mã số vé</b></p>
                 </div>
 
-                <!-- PHẦN NHẬP THÔNG TIN CÁ NHÂN -->
-                <div class="border-t pt-4 border-gray-100">
-                    <p class="text-red-800 font-bold mb-3 text-sm uppercase">1. Thông tin người mua</p>
-                    
-                    <div class="mb-3">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Họ và Tên (*)</label>
-                        <input type="text" id="buyerName" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="Ví dụ: Nguyễn Văn A">
-                    </div>
+                <!-- PHẦN NHẬP THÔNG TIN CÁ NHÂN (Đã sửa 2 ô nằm kế nhau) -->
+<div class="border-t pt-4 border-gray-100">
+    <p class="text-red-800 font-bold mb-3 text-sm uppercase">1. Thông tin người mua</p>
+    
+    <!-- Ô Họ tên nằm riêng 1 dòng -->
+    <div class="mb-3">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Họ và Tên (*)</label>
+        <input type="text" id="buyerName" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="Ví dụ: Nguyễn Văn A">
+    </div>
 
-                    <div class="mb-3">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại (*)</label>
-                        <input type="tel" id="buyerPhone" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="Để BTC liên hệ khi trúng thưởng">
-                    </div>
-                </div>
+    <!-- Dùng grid để chia 2 cột: SĐT và Email nằm kế nhau -->
+    <div class="grid grid-cols-2 gap-3 mb-3">
+        <!-- Cột trái: SĐT -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại (*)</label>
+            <input type="tel" id="buyerPhone" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="09xxxx">
+        </div>
 
+        <!-- Cột phải: Email -->
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Email trường (*)</label>
+            <input type="email" id="buyerEmail" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="mssv@school...">
+        </div>
+    </div>
+    <p class="text-xs text-gray-400 -mt-2 mb-3 italic">Vé điện tử sẽ được gửi về email này.</p>
+</div>
+```
+
+### 2. Cập nhật Code xử lý (JavaScript)
+Bạn nhớ cập nhật lại hàm `submitOrder` ở cuối file để nó lấy dữ liệu từ ô Email mới này nhé (nếu bạn chưa sửa ở bước trước):
+
+```javascript
+async function submitOrder() {
+    const name = document.getElementById('buyerName').value.trim();
+    const phone = document.getElementById('buyerPhone').value.trim();
+    
+    // LẤY GIÁ TRỊ TỪ Ô EMAIL MỚI
+    const email = document.getElementById('buyerEmail').value.trim(); 
+    
+    const fileInput = document.getElementById('proofImage');
+    
+    if (!name) return showStatus('Bạn chưa nhập tên!', 'error');
+    if (!phone) return showStatus('Bạn chưa nhập số điện thoại!', 'error');
+    
+    // KIỂM TRA EMAIL
+    if (!email) return showStatus('Bạn chưa nhập Email!', 'error'); 
+    
+    if (fileInput.files.length === 0) return showStatus('Bạn chưa chọn ảnh minh chứng!', 'error');
+
+    // ... (Phần xử lý ảnh giữ nguyên) ...
+
+    // GỬI DỮ LIỆU
+    /* Đoạn gửi fetch nhớ thêm dòng email: email như này nhé */
+    /*
+    body: JSON.stringify({
+        action: "BUY_TICKET",
+        number: currentSelection,
+        name: name,
+        phone: phone,
+        email: email,  <-- NHỚ DÒNG NÀY
+        image: base64Image
+    })
+    */
+    
+    // ... (Phần code dưới giữ nguyên) ...
+}
                 <!-- PHẦN UPLOAD ẢNH -->
                 <div class="border-t pt-4 border-gray-100">
                     <p class="text-red-800 font-bold mb-3 text-sm uppercase">2. Minh chứng thanh toán</p>
@@ -294,5 +345,6 @@
 </body>
 
 </html>
+
 
 
