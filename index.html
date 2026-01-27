@@ -1,5 +1,4 @@
 
-
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -31,10 +30,10 @@
 
         <!-- VIEW 1: TRANG CHỦ -->
         <div id="view-home" class="bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400">
-            <p class="text-center text-gray-600 mb-6">Bạn ơiiI!! nhanh nhanh chọn số liền tay lấy hên trước Tết nào.</p>
+            <p class="text-center text-gray-600 mb-6">Chào bạn! Hãy chọn cách mua vé số để ủng hộ hội xuân nhé.</p>
             
             <button onclick="pickRandom()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 rounded-lg shadow mb-4 flex justify-center items-center gap-2 transition transform active:scale-95">
-                <i data-lucide="shuffle"></i> Bốc số lấy hên 
+                <i data-lucide="shuffle"></i> Bốc số lấy hên
             </button>
             
             <div class="relative flex py-2 items-center">
@@ -45,7 +44,6 @@
 
             <button onclick="goToManual()" class="w-full bg-yellow-400 hover:bg-yellow-500 text-red-800 font-bold py-4 rounded-lg shadow flex justify-center items-center gap-2 transition transform active:scale-95">
                 <i data-lucide="edit-3"></i> Tự làm chủ vận may
-
             </button>
 
             <p class="text-center mt-6 text-xs text-gray-400">
@@ -65,7 +63,7 @@
             <button onclick="checkAndProceed()" class="w-full bg-red-600 text-white font-bold py-3 rounded-lg shadow hover:bg-red-700">Kiểm tra & Mua</button>
         </div>
 
-        <!-- VIEW 3: THANH TOÁN & ĐIỀN THÔNG TIN (ĐÃ CẬP NHẬT) -->
+        <!-- VIEW 3: THANH TOÁN & ĐIỀN THÔNG TIN -->
         <div id="view-checkout" class="hidden bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400 animate-fade-in">
             <button onclick="goHome()" class="text-gray-500 mb-4 flex items-center gap-1 text-sm"><i data-lucide="x" class="w-4 h-4"></i> Hủy</button>
             
@@ -78,76 +76,38 @@
 
             <div class="space-y-4">
                 <!-- Thông tin CK -->
-                <div class="bg-blue-50 p-3 rounded text-sm text-blue-800 border border-blue-200">
+               <div class="bg-blue-50 p-3 rounded text-sm text-blue-800 border border-blue-200">
                     <p class="font-bold">🏦 Chuyển khoản đến:</p>
                     <p>VCB Bank: <b>Nguyễn Ngọc Anh Thư - 9397453919</b></p>
                     <p>Nội dung CK: <b>Tên - số lượng vé - mã số vé</b></p>
                 </div>
 
-                <!-- PHẦN NHẬP THÔNG TIN CÁ NHÂN (Đã sửa 2 ô nằm kế nhau) -->
-<div class="border-t pt-4 border-gray-100">
-    <p class="text-red-800 font-bold mb-3 text-sm uppercase">1. Thông tin người mua</p>
-    
-    <!-- Ô Họ tên nằm riêng 1 dòng -->
-    <div class="mb-3">
-        <label class="block text-sm font-medium text-gray-700 mb-1">Họ và Tên (*)</label>
-        <input type="text" id="buyerName" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="Ví dụ: Nguyễn Văn A">
-    </div>
+                <!-- PHẦN NHẬP THÔNG TIN CÁ NHÂN (CÓ EMAIL VÀ SĐT KẾ NHAU) -->
+                <div class="border-t pt-4 border-gray-100">
+                    <p class="text-red-800 font-bold mb-3 text-sm uppercase">1. Thông tin người mua</p>
+                    
+                    <!-- Ô Họ tên nằm riêng 1 dòng -->
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Họ và Tên (*)</label>
+                        <input type="text" id="buyerName" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="Ví dụ: Nguyễn Văn A">
+                    </div>
 
-    <!-- Dùng grid để chia 2 cột: SĐT và Email nằm kế nhau -->
-    <div class="grid grid-cols-2 gap-3 mb-3">
-        <!-- Cột trái: SĐT -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại (*)</label>
-            <input type="tel" id="buyerPhone" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="09xxxx">
-        </div>
+                    <!-- Dùng grid để chia 2 cột: SĐT và Email nằm kế nhau -->
+                    <div class="grid grid-cols-2 gap-3 mb-3">
+                        <!-- Cột trái: SĐT -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại (*)</label>
+                            <input type="tel" id="buyerPhone" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="09xxxx">
+                        </div>
 
-        <!-- Cột phải: Email -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email trường (*)</label>
-            <input type="email" id="buyerEmail" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="mssv@school...">
-        </div>
-    </div>
-    <p class="text-xs text-gray-400 -mt-2 mb-3 italic">Vé điện tử sẽ được gửi về email này.</p>
-</div>
-```
-
-### 2. Cập nhật Code xử lý (JavaScript)
-Bạn nhớ cập nhật lại hàm `submitOrder` ở cuối file để nó lấy dữ liệu từ ô Email mới này nhé (nếu bạn chưa sửa ở bước trước):
-
-```javascript
-async function submitOrder() {
-    const name = document.getElementById('buyerName').value.trim();
-    const phone = document.getElementById('buyerPhone').value.trim();
-    
-    // LẤY GIÁ TRỊ TỪ Ô EMAIL MỚI
-    const email = document.getElementById('buyerEmail').value.trim(); 
-    
-    const fileInput = document.getElementById('proofImage');
-    
-    if (!name) return showStatus('Bạn chưa nhập tên!', 'error');
-    if (!phone) return showStatus('Bạn chưa nhập số điện thoại!', 'error');
-    
-    // KIỂM TRA EMAIL
-    if (!email) return showStatus('Bạn chưa nhập Email!', 'error'); 
-    
-    if (fileInput.files.length === 0) return showStatus('Bạn chưa chọn ảnh minh chứng!', 'error');
-
-    // ... (Phần xử lý ảnh giữ nguyên) ...
-
-    // GỬI DỮ LIỆU
-    /* Đoạn gửi fetch nhớ thêm dòng email: email như này nhé */
-    /*
-    body: JSON.stringify({
-        action: "BUY_TICKET",
-        number: currentSelection,
-        name: name,
-        phone: phone,
-        email: email,  <-- NHỚ DÒNG NÀY
-        image: base64Image
-    })
-    */
-    
+                        <!-- Cột phải: Email -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email trường (*)</label>
+                            <input type="email" id="buyerEmail" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="mssv@school...">
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-400 -mt-2 mb-3 italic">Vé điện tử sẽ được gửi về email này.</p>
+                </div>
 
                 <!-- PHẦN UPLOAD ẢNH -->
                 <div class="border-t pt-4 border-gray-100">
@@ -182,7 +142,7 @@ async function submitOrder() {
     <!-- JAVASCRIPT LOGIC -->
     <script>
         // === CẤU HÌNH: DÁN LINK WEB APP MỚI VÀO ĐÂY ===
-        const API_URL = "https://script.google.com/macros/s/AKfycby6MZjjvC1ibscbkAftfj2rLlzEi0JJMtXpj_kTjf1KJBOu-Tghfcr4XdgTzi2-5-OH/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbz..."; // Dán link thật của bạn vào đây
         
         let takenNumbers = [];
         let currentSelection = "";
@@ -241,6 +201,7 @@ async function submitOrder() {
             // Xóa form cũ nếu có
             document.getElementById('buyerName').value = '';
             document.getElementById('buyerPhone').value = '';
+            document.getElementById('buyerEmail').value = '';
             document.getElementById('proofImage').value = '';
             
             switchView('checkout');
@@ -266,6 +227,7 @@ async function submitOrder() {
                 // Xóa form cũ
                 document.getElementById('buyerName').value = '';
                 document.getElementById('buyerPhone').value = '';
+                document.getElementById('buyerEmail').value = '';
                 document.getElementById('proofImage').value = '';
                 
                 switchView('checkout');
@@ -277,11 +239,13 @@ async function submitOrder() {
         async function submitOrder() {
             const name = document.getElementById('buyerName').value.trim();
             const phone = document.getElementById('buyerPhone').value.trim();
+            const email = document.getElementById('buyerEmail').value.trim(); 
             const fileInput = document.getElementById('proofImage');
             
             // --- VALIDATION MỚI ---
             if (!name) return showStatus('Bạn chưa nhập tên!', 'error');
             if (!phone) return showStatus('Bạn chưa nhập số điện thoại!', 'error');
+            if (!email) return showStatus('Bạn chưa nhập Email!', 'error');
             if (fileInput.files.length === 0) return showStatus('Bạn chưa chọn ảnh minh chứng!', 'error');
 
             const file = fileInput.files[0];
@@ -301,7 +265,8 @@ async function submitOrder() {
                             action: "BUY_TICKET",
                             number: currentSelection,
                             name: name,
-                            phone: phone, // Gửi thêm số điện thoại
+                            phone: phone,
+                            email: email, 
                             image: base64Image
                         })
                     });
@@ -344,6 +309,4 @@ async function submitOrder() {
         }
     </script>
 </body>
-
 </html>
-
