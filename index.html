@@ -1,0 +1,295 @@
+
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vé Số Hội Xuân</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@400;700&display=swap');
+        body { font-family: 'Roboto', sans-serif; }
+        .tet-font { font-family: 'Patrick Hand', cursive; }
+        .loading { pointer-events: none; opacity: 0.7; }
+    </style>
+</head>
+<body class="bg-red-50 min-h-screen pb-10">
+
+    <!-- HEADER -->
+    <div class="bg-red-600 text-yellow-300 p-4 shadow-lg text-center border-b-4 border-yellow-500 sticky top-0 z-50">
+        <h1 class="text-3xl font-bold tet-font uppercase flex justify-center items-center gap-2">
+            <i data-lucide="ticket" class="w-8 h-8"></i> Vé Số Hội Xuân
+        </h1>
+        <p class="text-white text-sm mt-1">Rước lộc đầu năm - Vui xuân đón tết</p>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div id="app" class="max-w-md mx-auto p-4 mt-4">
+        
+        <div id="statusMessage" class="hidden mb-4 p-3 rounded-lg text-sm font-bold flex items-center gap-2"></div>
+
+        <!-- VIEW 1: TRANG CHỦ -->
+        <div id="view-home" class="bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400">
+            <p class="text-center text-gray-600 mb-6">Chào bạn! Hãy chọn cách mua vé số để ủng hộ hội xuân nhé.</p>
+            
+            <button onclick="pickRandom()" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 rounded-lg shadow mb-4 flex justify-center items-center gap-2 transition transform active:scale-95">
+                <i data-lucide="shuffle"></i> Chọn Ngẫu Nhiên
+            </button>
+            
+            <div class="relative flex py-2 items-center">
+                <div class="flex-grow border-t border-gray-300"></div>
+                <span class="flex-shrink mx-4 text-gray-400 text-sm">HOẶC</span>
+                <div class="flex-grow border-t border-gray-300"></div>
+            </div>
+
+            <button onclick="goToManual()" class="w-full bg-yellow-400 hover:bg-yellow-500 text-red-800 font-bold py-4 rounded-lg shadow flex justify-center items-center gap-2 transition transform active:scale-95">
+                <i data-lucide="edit-3"></i> Tự Chọn Số (000-999)
+            </button>
+
+            <p class="text-center mt-6 text-xs text-gray-400">
+                Đã bán: <span id="soldCount" class="font-bold text-red-500">...</span> vé
+            </p>
+        </div>
+
+        <!-- VIEW 2: NHẬP SỐ TỰ CHỌN -->
+        <div id="view-manual" class="hidden bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400">
+            <button onclick="goHome()" class="text-gray-500 mb-4 flex items-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại</button>
+            <h2 class="text-xl font-bold text-red-700 text-center mb-4">Nhập số bạn thích</h2>
+            
+            <div class="flex justify-center mb-6">
+                <input type="number" id="manualInput" placeholder="000" class="w-40 text-center text-4xl font-bold border-b-4 border-red-500 focus:outline-none bg-transparent tracking-widest text-gray-800" oninput="limitInput(this)">
+            </div>
+
+            <button onclick="checkAndProceed()" class="w-full bg-red-600 text-white font-bold py-3 rounded-lg shadow hover:bg-red-700">Kiểm tra & Mua</button>
+        </div>
+
+        <!-- VIEW 3: THANH TOÁN & ĐIỀN THÔNG TIN (ĐÃ CẬP NHẬT) -->
+        <div id="view-checkout" class="hidden bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400 animate-fade-in">
+            <button onclick="goHome()" class="text-gray-500 mb-4 flex items-center gap-1 text-sm"><i data-lucide="x" class="w-4 h-4"></i> Hủy</button>
+            
+            <div class="text-center mb-6">
+                <div class="inline-block bg-red-50 border border-red-200 rounded-lg px-8 py-2">
+                    <span class="block text-xs text-gray-500 uppercase">Số vé bạn chọn</span>
+                    <span id="displayNumber" class="text-5xl font-bold text-red-600 tracking-widest font-mono">---</span>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <!-- Thông tin CK -->
+                <div class="bg-blue-50 p-3 rounded text-sm text-blue-800 border border-blue-200">
+                    <p class="font-bold">🏦 Chuyển khoản đến:</p>
+                    <p>MB Bank: <b>0987654321</b></p>
+                    <p>Nội dung CK: <b>TEN - SOVE</b></p>
+                </div>
+
+                <!-- PHẦN NHẬP THÔNG TIN CÁ NHÂN -->
+                <div class="border-t pt-4 border-gray-100">
+                    <p class="text-red-800 font-bold mb-3 text-sm uppercase">1. Thông tin người mua</p>
+                    
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Họ và Tên (*)</label>
+                        <input type="text" id="buyerName" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="Ví dụ: Nguyễn Văn A">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại (*)</label>
+                        <input type="tel" id="buyerPhone" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="Để BTC liên hệ khi trúng thưởng">
+                    </div>
+                </div>
+
+                <!-- PHẦN UPLOAD ẢNH -->
+                <div class="border-t pt-4 border-gray-100">
+                    <p class="text-red-800 font-bold mb-3 text-sm uppercase">2. Minh chứng thanh toán</p>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ảnh chụp màn hình CK (*)</label>
+                    <input type="file" id="proofImage" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer">
+                    <p class="text-xs text-gray-400 mt-1 italic">Vui lòng tải ảnh rõ nét, dung lượng < 2MB.</p>
+                </div>
+
+                <button id="btnSubmit" onclick="submitOrder()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow flex justify-center items-center gap-2 mt-2">
+                    <i data-lucide="check-circle"></i> Xác Nhận & Mua Vé
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW 4: THÀNH CÔNG -->
+        <div id="view-success" class="hidden bg-white rounded-xl shadow-xl p-8 border-2 border-green-500 text-center">
+            <div class="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="check" class="w-8 h-8 text-green-600"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800">Đăng ký thành công!</h2>
+            <p class="text-gray-600 mt-2">Bạn đã mua vé số <b id="successNumber" class="text-red-600 text-xl">...</b></p>
+            <p class="text-sm text-gray-500 mt-1">Chúc bạn may mắn rinh quà to!</p>
+            
+            <div class="mt-6">
+                <button onclick="location.reload()" class="bg-yellow-400 text-red-900 font-bold py-2 px-6 rounded-full shadow hover:bg-yellow-500">Mua thêm vé khác</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // === CẤU HÌNH: DÁN LINK WEB APP MỚI VÀO ĐÂY ===
+        const API_URL = "https://script.google.com/macros/s/AKfycby6MZjjvC1ibscbkAftfj2rLlzEi0JJMtXpj_kTjf1KJBOu-Tghfcr4XdgTzi2-5-OH/exec"; 
+        
+        let takenNumbers = [];
+        let currentSelection = "";
+
+        lucide.createIcons();
+        fetchTakenNumbers();
+
+        async function fetchTakenNumbers() {
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    body: JSON.stringify({ action: "GET_TAKEN" })
+                });
+                const data = await response.json();
+                if(data.status === 'success') {
+                    takenNumbers = data.taken;
+                    document.getElementById('soldCount').innerText = takenNumbers.length;
+                }
+            } catch (e) {
+                console.error("Lỗi lấy dữ liệu", e);
+                document.getElementById('soldCount').innerText = "?";
+            }
+        }
+
+        function switchView(viewName) {
+            ['home', 'manual', 'checkout', 'success'].forEach(v => {
+                document.getElementById('view-' + v).classList.add('hidden');
+            });
+            document.getElementById('view-' + viewName).classList.remove('hidden');
+            document.getElementById('statusMessage').classList.add('hidden');
+        }
+
+        function goHome() { switchView('home'); }
+        function goToManual() { 
+            document.getElementById('manualInput').value = '';
+            switchView('manual'); 
+        }
+
+        function limitInput(el) {
+            if (el.value.length > 3) el.value = el.value.slice(0, 3);
+        }
+
+        function checkAndProceed() {
+            const val = document.getElementById('manualInput').value;
+            if (val.length !== 3) {
+                showStatus('Vui lòng nhập đủ 3 chữ số (ví dụ: 007)', 'error');
+                return;
+            }
+            if (takenNumbers.includes(val)) {
+                showStatus(`Số ${val} đã có người mua rồi!`, 'error');
+                return;
+            }
+            currentSelection = val;
+            document.getElementById('displayNumber').innerText = val;
+            
+            // Xóa form cũ nếu có
+            document.getElementById('buyerName').value = '';
+            document.getElementById('buyerPhone').value = '';
+            document.getElementById('proofImage').value = '';
+            
+            switchView('checkout');
+        }
+
+        function pickRandom() {
+            let attempt = 0;
+            let found = false;
+            let num = "";
+            
+            while (!found && attempt < 100) {
+                const rand = Math.floor(Math.random() * 1000);
+                num = rand.toString().padStart(3, '0');
+                if (!takenNumbers.includes(num)) {
+                    found = true;
+                }
+                attempt++;
+            }
+
+            if (found) {
+                currentSelection = num;
+                document.getElementById('displayNumber').innerText = num;
+                // Xóa form cũ
+                document.getElementById('buyerName').value = '';
+                document.getElementById('buyerPhone').value = '';
+                document.getElementById('proofImage').value = '';
+                
+                switchView('checkout');
+            } else {
+                showStatus('Hệ thống bận, hãy thử tự chọn số!', 'error');
+            }
+        }
+
+        async function submitOrder() {
+            const name = document.getElementById('buyerName').value.trim();
+            const phone = document.getElementById('buyerPhone').value.trim();
+            const fileInput = document.getElementById('proofImage');
+            
+            // --- VALIDATION MỚI ---
+            if (!name) return showStatus('Bạn chưa nhập tên!', 'error');
+            if (!phone) return showStatus('Bạn chưa nhập số điện thoại!', 'error');
+            if (fileInput.files.length === 0) return showStatus('Bạn chưa chọn ảnh minh chứng!', 'error');
+
+            const file = fileInput.files[0];
+            if (file.size > 2 * 1024 * 1024) return showStatus('Ảnh quá lớn (>2MB).', 'error');
+
+            setLoading(true);
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = async function() {
+                const base64Image = reader.result;
+
+                try {
+                    const response = await fetch(API_URL, {
+                        method: "POST",
+                        body: JSON.stringify({
+                            action: "BUY_TICKET",
+                            number: currentSelection,
+                            name: name,
+                            phone: phone, // Gửi thêm số điện thoại
+                            image: base64Image
+                        })
+                    });
+                    
+                    const result = await response.json();
+
+                    if (result.status === 'success') {
+                        document.getElementById('successNumber').innerText = currentSelection;
+                        switchView('success');
+                        fetchTakenNumbers(); 
+                    } else {
+                        showStatus(result.message, 'error');
+                    }
+                } catch (error) {
+                    showStatus('Lỗi kết nối. Thử lại sau.', 'error');
+                } finally {
+                    setLoading(false);
+                }
+            };
+        }
+
+        function showStatus(msg, type) {
+            const el = document.getElementById('statusMessage');
+            el.innerText = msg;
+            el.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            el.classList.add(type === 'error' ? 'bg-red-100' : 'bg-green-100', type === 'error' ? 'text-red-700' : 'text-green-700');
+            el.classList.remove('hidden');
+        }
+
+        function setLoading(isLoading) {
+            const btn = document.getElementById('btnSubmit');
+            if (isLoading) {
+                btn.innerText = 'Đang gửi...';
+                document.body.classList.add('loading');
+            } else {
+                btn.innerHTML = '<i data-lucide="check-circle"></i> Xác Nhận & Mua Vé';
+                document.body.classList.remove('loading');
+                lucide.createIcons();
+            }
+        }
+    </script>
+</body>
+</html>
