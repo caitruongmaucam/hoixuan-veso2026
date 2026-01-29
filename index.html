@@ -10,13 +10,25 @@
         @import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Roboto:wght@400;700&display=swap');
         body { font-family: 'Roboto', sans-serif; }
         .tet-font { font-family: 'Patrick Hand', cursive; }
-        .loading { pointer-events: none; opacity: 0.7; }
         
+        /* Hiệu ứng vé số */
         .ticket-card {
             background-image: radial-gradient(circle at 0 50%, transparent 8px, #fee2e2 9px), radial-gradient(circle at 100% 50%, transparent 8px, #fee2e2 9px);
             background-size: 50% 100%;
             background-position: 0 0, 100% 0;
             background-repeat: no-repeat;
+        }
+        
+        /* Animation cho Combo Hot */
+        @keyframes shine {
+            0% { background-position: -100% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        .combo-highlight {
+            background: linear-gradient(90deg, #fefce8 25%, #fef08a 50%, #fefce8 75%);
+            background-size: 200% 100%;
+            animation: shine 3s infinite;
+            border-color: #eab308;
         }
     </style>
 </head>
@@ -35,77 +47,130 @@
         
         <div id="statusMessage" class="hidden mb-4 p-3 rounded-lg text-sm font-bold flex items-center gap-2 shadow-md animate-bounce"></div>
 
-        <!-- VIEW 1: TRANG CHỦ -->
-        <div id="view-home" class="bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400">
-            <p class="text-center text-gray-600 mb-6">Chào bạn! Hãy chọn hình thức mua vé nhé.</p>
-            
-            <!-- Nút Random -->
-            <button onclick="chooseMode('random')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 rounded-lg shadow mb-2 flex justify-center items-center gap-2 transition transform active:scale-95 relative overflow-hidden group">
-                <span class="absolute top-0 right-0 bg-yellow-400 text-red-800 text-[10px] font-bold px-2 py-1 rounded-bl-lg">10k/vé</span>
-                <i data-lucide="shuffle"></i> Bốc số lấy hên (Random)
-            </button>
-            <p class="text-center text-xs text-gray-400 mb-4">Giá rẻ hơn - Hên xui may rủi</p>
-            
-            <div class="relative flex py-2 items-center">
-                <div class="flex-grow border-t border-gray-300"></div>
-                <span class="flex-shrink mx-4 text-gray-400 text-sm">HOẶC</span>
-                <div class="flex-grow border-t border-gray-300"></div>
+        <!-- VIEW 0: TRANG CHÀO MỪNG (CHECK LANYARD) -->
+        <div id="view-welcome" class="bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400 text-center animate-fade-in">
+            <!-- ẢNH BANNER TRANG ĐẦU -->
+            <div class="mb-6 rounded-lg overflow-hidden border-2 border-red-200 shadow-sm">
+                <!-- Bạn thay link ảnh banner của bạn vào đây -->
+                <img src="https://images.unsplash.com/photo-1613296966149-a1d2f7f90918?q=80&w=600&auto=format&fit=crop" alt="Banner Hoi Xuan" class="w-full h-48 object-cover">
             </div>
 
-            <!-- Nút Manual -->
-            <button onclick="chooseMode('manual')" class="w-full bg-yellow-400 hover:bg-yellow-500 text-red-800 font-bold py-4 rounded-lg shadow mb-2 flex justify-center items-center gap-2 transition transform active:scale-95 relative overflow-hidden">
-                <span class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg">12k/vé</span>
-                <i data-lucide="edit-3"></i> Tự làm chủ vận may
+            <h2 class="text-xl font-bold text-red-800 mb-2 uppercase">Ưu đãi Hội Xuân</h2>
+            <p class="text-gray-600 mb-6 text-sm">Bạn đã sở hữu <span class="font-bold text-blue-600">Lanyard (Dây đeo thẻ)</span> chưa?</p>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="setLanyard(false)" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-4 rounded-lg border-2 border-gray-300 transition transform active:scale-95">
+                    Chưa có 😢
+                    <span class="block text-xs font-normal mt-1 text-gray-500">Giá thường</span>
+                </button>
+                <button onclick="setLanyard(true)" class="bg-yellow-50 hover:bg-yellow-100 text-red-800 font-bold py-4 rounded-lg border-2 border-yellow-400 transition transform active:scale-95 relative overflow-hidden">
+                    <span class="absolute top-0 right-0 bg-red-600 text-white text-[10px] px-2 py-0.5 rounded-bl font-bold">Giảm giá</span>
+                    Đã có 😍
+                    <span class="block text-xs font-normal mt-1 text-red-600">Giá ưu đãi</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW 1: TRANG CHỦ (MENU CHỌN GÓI) -->
+        <div id="view-home" class="hidden bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400">
+            <div class="flex justify-between items-center mb-4 border-b border-gray-100 pb-2">
+                <p class="text-gray-600 font-bold text-sm">Chọn hình thức mua:</p>
+                <button onclick="location.reload()" class="text-xs text-blue-500 underline hover:text-blue-700">Chọn lại Lanyard</button>
+            </div>
+            
+            <!-- 1. Mua Lẻ Random -->
+            <button onclick="chooseMode('random')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg shadow mb-3 flex justify-between items-center px-4 transition transform active:scale-95">
+                <span class="flex items-center gap-2"><i data-lucide="shuffle" class="w-5 h-5"></i> Mua Lẻ (Random)</span>
+                <span class="bg-white/20 px-2 py-1 rounded text-sm font-mono" id="priceLabelRandom">10k</span>
             </button>
-            <p class="text-center text-xs text-gray-400">Chọn số mình thích - Tăng khả năng trúng</p>
+
+            <!-- 2. Mua Lẻ Tự Chọn -->
+            <button onclick="chooseMode('manual')" class="w-full bg-yellow-400 hover:bg-yellow-500 text-red-900 font-bold py-3 rounded-lg shadow mb-6 flex justify-between items-center px-4 transition transform active:scale-95">
+                <span class="flex items-center gap-2"><i data-lucide="edit-3" class="w-5 h-5"></i> Mua Lẻ (Tự chọn)</span>
+                <span class="bg-white/20 px-2 py-1 rounded text-sm font-mono" id="priceLabelManual">12k</span>
+            </button>
+            
+            <div class="border-t border-dashed border-gray-300 my-4"></div>
+            <p class="text-center text-red-600 font-bold uppercase text-sm mb-3">🔥 Gói Combo Siêu Hời 🔥</p>
+
+            <!-- 3. Combo Tam Tài -->
+            <button onclick="chooseCombo('tamtai')" class="w-full bg-red-50 border-2 border-red-200 hover:border-red-300 text-red-800 py-3 rounded-lg shadow mb-3 relative overflow-hidden transition transform active:scale-95 text-left px-4 group">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="font-bold block flex items-center gap-2 text-red-700"><i data-lucide="users" class="w-4 h-4"></i> Combo Tam Tài</span>
+                        <span class="text-xs text-gray-600 block mt-1">Mua 2 Tự chọn + Tặng 1 Random</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="block font-bold text-xl text-red-600" id="priceLabelTamTai">30k</span>
+                        <span class="text-[10px] text-gray-400 line-through" id="oldPriceTamTai">34k</span>
+                    </div>
+                </div>
+            </button>
+
+            <!-- 4. Combo Phát Lộc -->
+            <button onclick="chooseCombo('phatloc')" class="w-full bg-yellow-50 border-2 border-yellow-200 hover:border-yellow-400 text-yellow-900 py-3 rounded-lg shadow relative overflow-hidden transition transform active:scale-95 text-left px-4">
+                <div class="absolute top-0 right-0 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg">HOT</div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="font-bold block flex items-center gap-2"><i data-lucide="sparkles" class="w-4 h-4"></i> Combo Phát Lộc</span>
+                        <span class="text-xs text-gray-600 block mt-1">Mua 4 Tự chọn + Tặng 1 Tự chọn</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="block font-bold text-xl text-red-600" id="priceLabelPhatLoc">50k</span>
+                        <span class="text-[10px] text-gray-400 line-through" id="oldPricePhatLoc">60k</span>
+                    </div>
+                </div>
+            </button>
 
             <p class="text-center mt-6 text-xs text-gray-400">
-                Đã bán: <span id="soldCount" class="font-bold text-red-500">Đang tải...</span> vé
+                Đã bán: <span id="soldCount" class="font-bold text-red-500">...</span> vé
             </p>
         </div>
 
-        <!-- VIEW 2A: CHỌN SỐ LƯỢNG (RANDOM) -->
-        <div id="view-quantity-random" class="hidden bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400 animate-fade-in">
-            <button onclick="goHome()" class="text-gray-500 mb-4 flex items-center gap-1 text-sm hover:text-red-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại</button>
+        <!-- VIEW 2A: CHỌN SỐ LƯỢNG (RANDOM LẺ) -->
+        <div id="view-quantity-random" class="hidden bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400">
+            <button onclick="goHome()" class="text-gray-500 mb-4 flex items-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại</button>
             <h2 class="text-xl font-bold text-red-700 text-center mb-2">Mua vé ngẫu nhiên</h2>
-            <p class="text-center text-blue-600 font-bold text-sm mb-6 bg-blue-50 py-1 rounded border border-blue-100">Đơn giá: 10.000đ / vé</p>
+            <p class="text-center text-xs text-gray-500 mb-6">Hệ thống tự chọn số cho bạn</p>
             
             <div class="flex justify-center mb-8 items-center gap-4">
-                <button onclick="adjustQty('qRandom', -1)" class="w-10 h-10 rounded-full bg-gray-200 text-xl font-bold text-gray-600">-</button>
+                <button onclick="adjustQty('qRandom', -1)" class="w-10 h-10 rounded-full bg-gray-200 text-xl font-bold text-gray-600 hover:bg-gray-300">-</button>
                 <input type="number" id="qRandom" value="1" min="1" max="10" class="w-24 text-center text-5xl font-bold border-b-4 border-blue-500 focus:outline-none text-gray-800 bg-transparent" readonly>
-                <button onclick="adjustQty('qRandom', 1)" class="w-10 h-10 rounded-full bg-gray-200 text-xl font-bold text-gray-600">+</button>
+                <button onclick="adjustQty('qRandom', 1)" class="w-10 h-10 rounded-full bg-gray-200 text-xl font-bold text-gray-600 hover:bg-gray-300">+</button>
             </div>
 
-            <button onclick="processRandom()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg shadow hover:bg-blue-700 transition">
+            <button onclick="processRandom()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg shadow hover:bg-blue-700">
                 Quay số ngay 🎲
             </button>
         </div>
 
-        <!-- VIEW 2B: CHỌN SỐ LƯỢNG (MANUAL) -->
-        <div id="view-quantity-manual" class="hidden bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400 animate-fade-in">
-            <button onclick="goHome()" class="text-gray-500 mb-4 flex items-center gap-1 text-sm hover:text-red-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại</button>
-            <h2 class="text-xl font-bold text-red-700 text-center mb-2">Tự chọn số may mắn</h2>
-            <p class="text-center text-red-600 font-bold text-sm mb-6 bg-red-50 py-1 rounded border border-red-100">Đơn giá: 12.000đ / vé</p>
-            
+        <!-- VIEW 2B: CHỌN SỐ LƯỢNG (MANUAL LẺ) -->
+        <div id="view-quantity-manual" class="hidden bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400">
+            <button onclick="goHome()" class="text-gray-500 mb-4 flex items-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại</button>
+            <h2 class="text-xl font-bold text-red-700 text-center mb-2">Mua vé tự chọn</h2>
             <div class="flex justify-center mb-8 items-center gap-4">
-                <button onclick="adjustQty('qManual', -1)" class="w-10 h-10 rounded-full bg-gray-200 text-xl font-bold text-gray-600">-</button>
+                <button onclick="adjustQty('qManual', -1)" class="w-10 h-10 rounded-full bg-gray-200 text-xl font-bold text-gray-600 hover:bg-gray-300">-</button>
                 <input type="number" id="qManual" value="1" min="1" max="10" class="w-24 text-center text-5xl font-bold border-b-4 border-yellow-500 focus:outline-none text-gray-800 bg-transparent" readonly>
-                <button onclick="adjustQty('qManual', 1)" class="w-10 h-10 rounded-full bg-gray-200 text-xl font-bold text-gray-600">+</button>
+                <button onclick="adjustQty('qManual', 1)" class="w-10 h-10 rounded-full bg-gray-200 text-xl font-bold text-gray-600 hover:bg-gray-300">+</button>
             </div>
-
-            <button onclick="setupManualInputs()" class="w-full bg-yellow-400 text-red-900 font-bold py-3 rounded-lg shadow hover:bg-yellow-500 transition">
+            <button onclick="setupManualInputs('manual')" class="w-full bg-yellow-400 text-red-900 font-bold py-3 rounded-lg shadow hover:bg-yellow-500">
                 Tiếp tục nhập số 👉
             </button>
         </div>
 
-        <!-- VIEW 3: NHẬP SỐ TỰ CHỌN (LIST INPUTS) -->
-        <div id="view-manual-list" class="hidden bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400 animate-fade-in">
-            <button onclick="chooseMode('manual')" class="text-gray-500 mb-4 flex items-center gap-1 text-sm hover:text-red-600"><i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại</button>
-            <h2 class="text-xl font-bold text-red-700 text-center mb-1">Nhập các số bạn thích</h2>
-            <p class="text-center text-xs text-gray-500 mb-6">(Nhập 3 chữ số từ 000-999)</p>
+        <!-- VIEW 3: NHẬP SỐ (DÙNG CHUNG CHO MANUAL, TAM TAI, PHAT LOC) -->
+        <div id="view-manual-list" class="hidden bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400">
+            <button onclick="goHome()" class="text-gray-500 mb-4 flex items-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại</button>
+            <h2 class="text-xl font-bold text-red-700 text-center mb-1" id="inputTitle">Nhập số</h2>
+            <p class="text-center text-xs text-gray-500 mb-4" id="inputSubtitle">Nhập 3 chữ số từ 000-999</p>
             
             <div id="manualInputsContainer" class="space-y-3 mb-6 max-h-60 overflow-y-auto pr-2">
                 <!-- Inputs generated via JS -->
+            </div>
+            
+            <!-- Note cho combo Tam Tài -->
+            <div id="tamTaiNote" class="hidden bg-blue-50 p-2 rounded text-xs text-blue-700 mb-4 text-center border border-blue-200">
+                🎁 Combo Tam Tài: Hệ thống sẽ tự động thêm <b>1 số ngẫu nhiên</b> ở bước thanh toán.
             </div>
 
             <button onclick="checkManualList()" class="w-full bg-red-600 text-white font-bold py-3 rounded-lg shadow hover:bg-red-700 transition">
@@ -115,105 +180,103 @@
 
         <!-- VIEW 4: THANH TOÁN (CHECKOUT) -->
         <div id="view-checkout" class="hidden bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400 animate-fade-in">
-            <button onclick="goHome()" class="text-gray-500 mb-4 flex items-center gap-1 text-sm hover:text-red-600"><i data-lucide="x" class="w-4 h-4"></i> Hủy giao dịch</button>
+            <button onclick="goHome()" class="text-gray-500 mb-4 flex items-center gap-1 text-sm"><i data-lucide="x" class="w-4 h-4"></i> Hủy</button>
             
-            <div class="text-center mb-6 bg-red-50 p-4 rounded-lg border border-red-100">
-                <span class="block text-xs text-gray-500 uppercase mb-2 font-bold">Danh sách vé bạn chọn</span>
-                <div id="checkoutList" class="flex flex-wrap justify-center gap-2 mb-3">
-                    <!-- Ticket list -->
-                </div>
+            <div id="checkoutBox" class="text-center mb-6 bg-red-50 p-4 rounded-lg border border-red-100">
+                <span class="block text-xs text-gray-500 uppercase mb-2 font-bold">Danh sách vé</span>
+                <div id="checkoutList" class="flex flex-wrap justify-center gap-2 mb-3"></div>
                 
-                <!-- BẢNG TÍNH TIỀN -->
-                <div class="border-t border-red-200 pt-2 flex justify-between items-center px-4">
-                    <span class="text-sm text-gray-600">Số lượng:</span>
-                    <span class="font-bold text-gray-800"><span id="totalTickets">0</span> vé</span>
-                </div>
-                <div class="flex justify-between items-center px-4 mt-1 text-xs text-gray-500">
-                     <span>Đơn giá:</span>
-                     <span><span id="pricePerTicket">0</span>đ/vé</span>
-                </div>
-                <div class="flex justify-between items-center px-4 mt-2 border-t border-dashed border-red-200 pt-2">
-                     <span class="text-sm font-bold text-red-800">THÀNH TIỀN:</span>
-                     <span class="font-bold text-red-600 text-2xl"><span id="totalPrice">0</span>đ</span>
+                <div class="border-t border-red-200 pt-2 px-2">
+                    <!-- Hiện tên combo nếu có -->
+                    <div id="comboRow" class="hidden flex justify-between items-center text-sm text-green-700 font-bold mb-1">
+                         <span><i data-lucide="gift" class="w-3 h-3 inline"></i> Đã áp dụng:</span>
+                         <span id="comboName">Combo</span>
+                    </div>
+                    <div class="flex justify-between items-center mt-2 border-t border-dashed border-red-200 pt-2">
+                         <span class="text-sm font-bold text-red-800">TỔNG CỘNG:</span>
+                         <span class="font-bold text-red-600 text-2xl"><span id="totalPrice">0</span>đ</span>
+                    </div>
                 </div>
             </div>
 
             <div class="space-y-4">
-                <!-- Thông tin CK -->
-               <div class="bg-blue-50 p-3 rounded text-sm text-blue-800 border border-blue-200">
-                    <p class="font-bold">🏦 Chuyển khoản đến:</p>
-                    <p>VCB Bank: <b>Nguyễn Ngọc Anh Thư - 9397453919</b></p>
-                    <p>Nội dung CK: <b>Tên - Số lượng vé</b></p>
+                <!-- ẢNH QR CỐ ĐỊNH -->
+               <div class="bg-blue-50 p-4 rounded-lg text-sm text-blue-800 border border-blue-200">
+                    <p class="font-bold mb-2 text-center text-red-600">👇 Quét mã QR bên dưới 👇</p>
+                    <div class="flex justify-center mb-2">
+                        <!-- CHỖ NÀY ĐỂ ẢNH QR CỦA BẠN -->
+                        <!-- Bạn hãy đổi link ảnh bên dưới thành ảnh QR của bạn -->
+                        <img src="https://img.vietqr.io/image/vcb-9397453919-compact.png" alt="QR Code" class="w-48 rounded shadow-lg border-2 border-white">
+                    </div>
+                    <p class="text-center text-xs italic text-gray-500 mb-2">
+                        (Vui lòng nhập đúng số tiền: <b class="text-red-600 text-base"><span id="qrAmountText">0</span>đ</b>)
+                    </p>
+                    <div class="bg-white p-2 rounded border border-blue-100 text-xs">
+                        <p>Chủ TK: <b>NGUYEN NGOC ANH THU</b></p>
+                        <p>STK: <b>9397453919</b> (Vietcombank)</p>
+                        <p>Nội dung CK: <b class="text-red-600">TEN - SO VE</b></p>
+                    </div>
                 </div>
 
-                <!-- FORM NHẬP -->
+                <!-- FORM -->
                 <div class="border-t pt-4 border-gray-100">
                     <p class="text-red-800 font-bold mb-3 text-sm uppercase">1. Thông tin người mua</p>
-                    
                     <div class="mb-3">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Họ và Tên (*)</label>
-                        <input type="text" id="buyerName" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="Ví dụ: Nguyễn Văn A">
+                        <input type="text" id="buyerName" class="w-full p-3 border border-gray-300 rounded outline-none focus:border-yellow-400" placeholder="Họ và Tên (*)">
                     </div>
-
                     <div class="grid grid-cols-2 gap-3 mb-3">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">SĐT (*)</label>
-                            <input type="tel" id="buyerPhone" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="09xxxx">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Email (*)</label>
-                            <input type="email" id="buyerEmail" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="mssv@...">
-                        </div>
+                        <input type="tel" id="buyerPhone" class="w-full p-3 border border-gray-300 rounded outline-none focus:border-yellow-400" placeholder="SĐT (*)">
+                        <input type="email" id="buyerEmail" class="w-full p-3 border border-gray-300 rounded outline-none focus:border-yellow-400" placeholder="Email (*)">
                     </div>
                 </div>
 
                 <div class="border-t pt-4 border-gray-100">
                     <p class="text-red-800 font-bold mb-3 text-sm uppercase">2. Minh chứng thanh toán</p>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Ảnh chụp màn hình CK (*)</label>
-                    <input type="file" id="proofImage" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100 cursor-pointer">
-                    <p class="text-xs text-gray-400 mt-1 italic">Vui lòng tải ảnh rõ nét, dung lượng < 2MB.</p>
+                    <input type="file" id="proofImage" accept="image/*" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:bg-red-50 file:text-red-700 cursor-pointer">
                 </div>
 
-                <button id="btnSubmit" onclick="submitOrder()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg flex justify-center items-center gap-2 mt-4 transform active:scale-95 transition">
+                <button id="btnSubmit" onclick="submitOrder()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg flex justify-center items-center gap-2 mt-4">
                     <i data-lucide="check-circle"></i> Xác Nhận & Mua Vé
                 </button>
             </div>
         </div>
 
-        <!-- VIEW 5: THÀNH CÔNG -->
+        <!-- VIEW 5: SUCCESS -->
         <div id="view-success" class="hidden bg-white rounded-xl shadow-xl p-8 border-2 border-green-500 text-center animate-bounce-in">
-            <div class="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                <i data-lucide="check" class="w-10 h-10 text-green-600"></i>
+            <div class="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <i data-lucide="check" class="w-8 h-8 text-green-600"></i>
             </div>
-            <h2 class="text-2xl font-bold text-gray-800">Đăng ký thành công!</h2>
+            <h2 class="text-2xl font-bold text-gray-800">Thành công!</h2>
             <p class="text-gray-600 mt-2">Bạn đã mua <b id="successCount" class="text-red-600 text-xl">0</b> vé thành công.</p>
-            <p class="text-sm text-gray-500 mt-1">Hệ thống đã gửi vé điện tử về Email của bạn.</p>
-            
-            <div class="mt-8">
-                <button onclick="location.reload()" class="bg-yellow-400 text-red-900 font-bold py-3 px-8 rounded-full shadow hover:bg-yellow-500 transition">
-                    Mua thêm vé khác
-                </button>
-            </div>
+            <p class="text-sm text-gray-500 mt-1">Vé điện tử đã được gửi về email.</p>
+            <button onclick="location.reload()" class="mt-6 bg-yellow-400 text-red-900 font-bold py-3 px-8 rounded-full shadow hover:bg-yellow-500">Mua thêm vé khác</button>
         </div>
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- JAVASCRIPT -->
     <script>
         // === CẤU HÌNH LIÊN KẾT ===
         // Để trống ("https://script.google.com/macros/s/AKfycby6MZjjvC1ibscbkAftfj2rLlzEi0JJMtXpj_kTjf1KJBOu-Tghfcr4XdgTzi2-5-OH/exec") để chạy Demo. Khi chạy thật thì điền link Google Script vào đây.
         const API_URL = ""; 
-        
+
+        // === BẢNG GIÁ (Logic Cốt Lõi) ===
+        const PRICES = {
+            noLanyard: { random: 10000, manual: 12000, tamtai: 30000, phatloc: 50000 },
+            hasLanyard: { random: 9000, manual: 11000, tamtai: 27000, phatloc: 45000 }
+        };
+
+        let hasLanyard = false;
+        let currentMode = ''; // 'random', 'manual', 'tamtai', 'phatloc'
         let takenNumbers = [];
         let selectedNumbers = [];
-        let currentTicketPrice = 10000; // Giá mặc định
 
         lucide.createIcons();
-        
-        // Setup Demo
-        if (!API_URL || API_URL === "") {
+
+        // Init Demo Data
+        if (!API_URL) {
             console.log("⚠️ Preview Mode Active");
-            takenNumbers = ["111", "222", "888", "999"];
+            takenNumbers = ["111", "222"];
             document.getElementById('soldCount').innerText = takenNumbers.length;
         } else {
             fetchTakenNumbers();
@@ -221,25 +284,20 @@
 
         async function fetchTakenNumbers() {
             try {
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    body: JSON.stringify({ action: "GET_TAKEN" })
-                });
-                const data = await response.json();
+                const res = await fetch(API_URL, { method: "POST", body: JSON.stringify({ action: "GET_TAKEN" }) });
+                const data = await res.json();
                 if(data.status === 'success') {
                     takenNumbers = data.taken;
                     document.getElementById('soldCount').innerText = takenNumbers.length;
                 }
-            } catch (e) {
-                console.error("Lỗi lấy dữ liệu", e);
-                document.getElementById('soldCount').innerText = "?";
-            }
+            } catch (e) { document.getElementById('soldCount').innerText = "?"; }
         }
 
-        function switchView(viewName) {
-            const views = ['home', 'quantity-random', 'quantity-manual', 'manual-list', 'checkout', 'success'];
+        // --- NAVIGATION ---
+        function switchView(name) {
+            const views = ['welcome', 'home', 'quantity-random', 'quantity-manual', 'manual-list', 'checkout', 'success'];
             views.forEach(v => document.getElementById('view-' + v).classList.add('hidden'));
-            document.getElementById('view-' + viewName).classList.remove('hidden');
+            document.getElementById('view-' + name).classList.remove('hidden');
             document.getElementById('statusMessage').classList.add('hidden');
         }
 
@@ -248,17 +306,45 @@
             switchView('home'); 
         }
 
-        // --- XỬ LÝ CHỌN CHẾ ĐỘ & GIÁ TIỀN ---
+        // --- STEP 1: LANYARD CHECK ---
+        function setLanyard(status) {
+            hasLanyard = status;
+            updatePriceLabels();
+            switchView('home');
+        }
+
+        function updatePriceLabels() {
+            const p = hasLanyard ? PRICES.hasLanyard : PRICES.noLanyard;
+            // Update labels on home screen
+            document.getElementById('priceLabelRandom').innerText = (p.random / 1000) + 'k';
+            document.getElementById('priceLabelManual').innerText = (p.manual / 1000) + 'k';
+            document.getElementById('priceLabelTamTai').innerText = (p.tamtai / 1000) + 'k';
+            document.getElementById('priceLabelPhatLoc').innerText = (p.phatloc / 1000) + 'k';
+            
+            // Show comparison for Combo
+            document.getElementById('oldPriceTamTai').innerText = hasLanyard ? '31k' : '34k'; 
+            document.getElementById('oldPricePhatLoc').innerText = hasLanyard ? '55k' : '60k';
+        }
+
+        // --- STEP 2: CHOOSE MODE ---
         function chooseMode(mode) {
-            if (mode === 'random') {
-                currentTicketPrice = 10000; // Giá 10k
-                switchView('quantity-random');
-            } else {
-                currentTicketPrice = 12000; // Giá 12k
-                switchView('quantity-manual');
+            currentMode = mode;
+            if (mode === 'random') switchView('quantity-random');
+            else switchView('quantity-manual');
+        }
+
+        function chooseCombo(comboType) {
+            currentMode = comboType;
+            if (comboType === 'tamtai') {
+                // Tam Tài: Nhập 2 số, hệ thống tặng 1 số
+                setupManualInputs('tamtai'); 
+            } else if (comboType === 'phatloc') {
+                // Phát Lộc: Nhập 5 số (tính tiền 4)
+                setupManualInputs('phatloc');
             }
         }
 
+        // --- QUANTITY LOGIC ---
         function adjustQty(id, amount) {
             const el = document.getElementById(id);
             let val = parseInt(el.value) + amount;
@@ -267,11 +353,15 @@
             el.value = val;
         }
 
+        // --- RANDOM PROCESS ---
         function processRandom() {
             const qty = parseInt(document.getElementById('qRandom').value);
-            selectedNumbers = [];
+            generateRandoms(qty);
+            showCheckout();
+        }
+
+        function generateRandoms(qty) {
             let attempts = 0;
-            
             while (selectedNumbers.length < qty && attempts < 500) {
                 const rand = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
                 if (!takenNumbers.includes(rand) && !selectedNumbers.includes(rand)) {
@@ -279,161 +369,159 @@
                 }
                 attempts++;
             }
-
-            if (selectedNumbers.length < qty) {
-                showStatus("Không đủ số ngẫu nhiên. Vui lòng thử lại.", "error");
-            } else {
-                showCheckout();
-            }
         }
 
-        function setupManualInputs() {
-            const qty = parseInt(document.getElementById('qManual').value);
+        // --- MANUAL INPUTS SETUP ---
+        function setupManualInputs(modeOverride) {
+            let qty = 0;
             const container = document.getElementById('manualInputsContainer');
-            container.innerHTML = ''; 
+            container.innerHTML = '';
+            document.getElementById('tamTaiNote').classList.add('hidden');
+            
+            if (modeOverride === 'tamtai') {
+                qty = 2; // Nhập 2 số tự chọn
+                document.getElementById('inputTitle').innerText = "Combo Tam Tài";
+                document.getElementById('inputSubtitle').innerText = "Nhập 2 số bạn thích (Số thứ 3 sẽ được random tặng)";
+                document.getElementById('tamTaiNote').classList.remove('hidden');
+            } else if (modeOverride === 'phatloc') {
+                qty = 5; // Nhập 5 số tự chọn
+                document.getElementById('inputTitle').innerText = "Combo Phát Lộc";
+                document.getElementById('inputSubtitle').innerText = "Nhập 5 số bạn thích (Mua 4 tặng 1)";
+            } else {
+                // Manual thường
+                qty = parseInt(document.getElementById('qManual').value);
+                document.getElementById('inputTitle').innerText = "Nhập số tự chọn";
+                document.getElementById('inputSubtitle').innerText = "Nhập 3 chữ số (000-999)";
+            }
 
             for (let i = 0; i < qty; i++) {
                 container.innerHTML += `
                     <div class="flex items-center gap-3">
                         <span class="font-bold text-gray-400 w-6 text-right">#${i+1}</span>
-                        <input type="number" class="manual-ticket-input w-full p-3 border-2 border-gray-200 rounded-lg text-center text-xl font-bold tracking-widest focus:outline-none focus:border-yellow-400 transition" placeholder="000" oninput="limitInput(this)">
+                        <input type="number" class="manual-ticket-input w-full p-3 border-2 border-gray-200 rounded-lg text-center text-xl font-bold tracking-widest focus:outline-none focus:border-yellow-400" placeholder="000" oninput="limitInput(this)">
                     </div>
                 `;
             }
             switchView('manual-list');
         }
 
-        function limitInput(el) {
-            if (el.value.length > 3) el.value = el.value.slice(0, 3);
-        }
+        function limitInput(el) { if (el.value.length > 3) el.value = el.value.slice(0, 3); }
 
         function checkManualList() {
             const inputs = document.querySelectorAll('.manual-ticket-input');
             const tempNumbers = [];
             let hasError = false;
 
-            inputs.forEach(inp => inp.classList.remove('border-red-500'));
-
             inputs.forEach(input => {
                 const val = input.value;
-                if (val.length !== 3) {
-                    showStatus("Vui lòng nhập đủ 3 chữ số cho tất cả các vé.", "error");
-                    input.classList.add('border-red-500');
-                    hasError = true;
-                    return;
-                }
-                if (takenNumbers.includes(val)) {
-                    showStatus(`Số ${val} đã có người mua.`, "error");
-                    input.classList.add('border-red-500');
-                    hasError = true;
-                    return;
-                }
-                if (tempNumbers.includes(val)) {
-                    showStatus(`Bạn nhập trùng số ${val}.`, "error");
-                    input.classList.add('border-red-500');
-                    hasError = true;
-                    return;
-                }
+                if (val.length !== 3) { showStatus("Vui lòng nhập đủ 3 chữ số.", "error"); hasError = true; return; }
+                if (takenNumbers.includes(val)) { showStatus(`Số ${val} đã có người mua.`, "error"); hasError = true; return; }
+                if (tempNumbers.includes(val)) { showStatus(`Trùng số ${val}.`, "error"); hasError = true; return; }
                 tempNumbers.push(val);
             });
 
             if (!hasError) {
                 selectedNumbers = tempNumbers;
+                // Nếu là Combo Tam Tài, sinh thêm 1 số Random
+                if (currentMode === 'tamtai') {
+                    generateRandoms(3); // Hiện có 2, sinh thêm cho đủ 3 (tức thêm 1)
+                }
                 showCheckout();
             }
         }
 
+        // --- CHECKOUT & PRICE CALC ---
         function showCheckout() {
-            // Hiển thị danh sách vé
-            const listEl = document.getElementById('checkoutList');
-            listEl.innerHTML = selectedNumbers.map(n => 
-                `<span class="ticket-card bg-red-100 text-red-700 font-mono font-bold px-4 py-2 rounded shadow-sm border border-red-200 text-lg">${n}</span>`
+            const p = hasLanyard ? PRICES.hasLanyard : PRICES.noLanyard;
+            let totalPrice = 0;
+            let comboName = "";
+            let isCombo = false;
+
+            // Tính tiền
+            if (currentMode === 'random') {
+                totalPrice = selectedNumbers.length * p.random;
+            } else if (currentMode === 'manual') {
+                totalPrice = selectedNumbers.length * p.manual;
+            } else if (currentMode === 'tamtai') {
+                totalPrice = p.tamtai;
+                comboName = "Combo Tam Tài";
+                isCombo = true;
+            } else if (currentMode === 'phatloc') {
+                totalPrice = p.phatloc;
+                comboName = "Combo Phát Lộc";
+                isCombo = true;
+            }
+
+            // Hiển thị UI
+            document.getElementById('checkoutList').innerHTML = selectedNumbers.map(n => 
+                `<span class="ticket-card bg-red-100 text-red-700 font-mono font-bold px-3 py-1 rounded border border-red-200 text-lg">${n}</span>`
             ).join('');
             
-            // Cập nhật giá tiền
-            document.getElementById('totalTickets').innerText = selectedNumbers.length;
-            document.getElementById('pricePerTicket').innerText = currentTicketPrice.toLocaleString('vi-VN');
-            document.getElementById('totalPrice').innerText = (selectedNumbers.length * currentTicketPrice).toLocaleString('vi-VN');
+            document.getElementById('totalPrice').innerText = totalPrice.toLocaleString('vi-VN');
+            document.getElementById('qrAmountText').innerText = totalPrice.toLocaleString('vi-VN');
             
+            if (isCombo) {
+                document.getElementById('comboRow').classList.remove('hidden');
+                document.getElementById('comboName').innerText = comboName;
+                document.getElementById('checkoutBox').classList.add('combo-highlight');
+            } else {
+                document.getElementById('comboRow').classList.add('hidden');
+                document.getElementById('checkoutBox').classList.remove('combo-highlight');
+            }
+
             switchView('checkout');
         }
 
+        // --- SUBMIT ---
         async function submitOrder() {
-            // Demo Mode Logic
+            const name = document.getElementById('buyerName').value;
+            const phone = document.getElementById('buyerPhone').value;
+            const email = document.getElementById('buyerEmail').value;
+            const fileInput = document.getElementById('proofImage');
+
+            if (!name || !phone || !email) return showStatus('Thiếu thông tin!', 'error');
+            if (fileInput.files.length === 0) return showStatus('Thiếu ảnh minh chứng!', 'error');
+
+            // Demo Mode
             if (!API_URL) {
-                setLoading(true);
+                document.getElementById('btnSubmit').innerText = "Đang gửi...";
                 setTimeout(() => {
-                    setLoading(false);
                     document.getElementById('successCount').innerText = selectedNumbers.length;
                     switchView('success');
                 }, 1500);
                 return;
             }
-
+            
             // Real Logic
-            const name = document.getElementById('buyerName').value.trim();
-            const phone = document.getElementById('buyerPhone').value.trim();
-            const email = document.getElementById('buyerEmail').value.trim();
-            const fileInput = document.getElementById('proofImage');
-            
-            if (!name || !phone || !email) return showStatus('Vui lòng điền đầy đủ thông tin.', 'error');
-            if (fileInput.files.length === 0) return showStatus('Thiếu ảnh minh chứng.', 'error');
-            
-            if (fileInput.files[0].size > 2 * 1024 * 1024) return showStatus('Ảnh quá lớn (>2MB).', 'error');
-
-            setLoading(true);
+            document.getElementById('btnSubmit').innerText = "Đang gửi...";
             const reader = new FileReader();
             reader.readAsDataURL(fileInput.files[0]);
             reader.onload = async function() {
                 try {
-                    const response = await fetch(API_URL, {
+                    const res = await fetch(API_URL, {
                         method: "POST",
                         body: JSON.stringify({
                             action: "BUY_TICKET",
-                            numbers: selectedNumbers, 
-                            name: name,
-                            phone: phone,
-                            email: email,
+                            numbers: selectedNumbers,
+                            name: name, phone: phone, email: email,
                             image: reader.result
                         })
                     });
-                    const result = await response.json();
-                    if (result.status === 'success') {
+                    const data = await res.json();
+                    if (data.status === 'success') {
                         document.getElementById('successCount').innerText = selectedNumbers.length;
                         switchView('success');
-                        fetchTakenNumbers(); 
-                    } else {
-                        showStatus(result.message, 'error');
-                    }
-                } catch (error) {
-                    showStatus('Lỗi kết nối Server.', 'error');
-                } finally {
-                    setLoading(false);
-                }
+                        fetchTakenNumbers();
+                    } else { showStatus(data.message, 'error'); }
+                } catch (e) { showStatus("Lỗi kết nối", 'error'); }
             };
         }
 
         function showStatus(msg, type) {
             const el = document.getElementById('statusMessage');
             el.innerText = msg;
-            el.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
-            el.classList.add(type === 'error' ? 'bg-red-100' : 'bg-green-100', type === 'error' ? 'text-red-700' : 'text-green-700');
             el.classList.remove('hidden');
-            setTimeout(() => el.classList.add('hidden'), 5000);
-        }
-
-        function setLoading(isLoading) {
-            const btn = document.getElementById('btnSubmit');
-            if (isLoading) {
-                btn.innerHTML = '<span class="animate-spin">⌛</span> Đang xử lý...';
-                btn.disabled = true;
-                btn.classList.add('opacity-75', 'cursor-not-allowed');
-            } else {
-                btn.innerHTML = '<i data-lucide="check-circle"></i> Xác Nhận & Mua Vé';
-                btn.disabled = false;
-                btn.classList.remove('opacity-75', 'cursor-not-allowed');
-                lucide.createIcons();
-            }
+            setTimeout(() => el.classList.add('hidden'), 3000);
         }
     </script>
 </body>
