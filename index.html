@@ -47,14 +47,14 @@
         <!-- VIEW 0: WELCOME & LANYARD -->
         <div id="view-welcome" class="bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400 text-center animate-fade-in">
             <div class="mb-6 rounded-lg overflow-hidden border-2 border-red-200 shadow-sm">
-                <!-- Thay bằng tên file bạn vừa up lên -->
-<img src="./banner.png" alt="Banner Hội Xuân" class="w-full h-auto object-cover">
+                <!-- THAY LINK ẢNH BANNER CỦA BẠN VÀO ĐÂY -->
+                <img src="https://images.unsplash.com/photo-1613296966149-a1d2f7f90918?q=80&w=600&auto=format&fit=crop" alt="Banner" class="w-full h-48 object-cover">
             </div>
 
             <h2 class="text-xl font-bold text-red-800 mb-2 uppercase">Ưu đãi Hội Xuân</h2>
             <p class="text-gray-600 mb-6 text-sm">Bạn đã sở hữu <span class="font-bold text-blue-600">Lanyard (Dây đeo thẻ)</span> chưa?</p>
             
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-4 mb-4">
                 <button onclick="setLanyard(false)" class="bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-4 rounded-lg border-2 border-gray-300 transition transform active:scale-95">
                     Chưa có 😢
                     <span class="block text-xs font-normal mt-1 text-gray-500">Giá thường</span>
@@ -64,6 +64,14 @@
                     Đã có 😍
                     <span class="block text-xs font-normal mt-1 text-red-600">Giá ưu đãi</span>
                 </button>
+            </div>
+
+            <!-- CẢNH BÁO CHỐNG TRICK -->
+            <div class="bg-red-50 border border-red-200 rounded-lg p-3 text-xs text-left">
+                <p class="text-red-600 font-bold mb-1 flex items-center gap-1"><i data-lucide="alert-triangle" class="w-3 h-3"></i> Lưu ý:</p>
+                <p class="text-gray-600 italic">
+                    Tụi mình sẽ kiểm tra bằng email bạn đã dùng để mua lanyard. Nếu email không khớp, vé sẽ được xem là hong hợp lệ nhe.
+                </p>
             </div>
         </div>
 
@@ -75,12 +83,12 @@
             </div>
             
             <button onclick="chooseMode('random')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg shadow mb-3 flex justify-between items-center px-4 transition transform active:scale-95">
-                <span class="flex items-center gap-2"><i data-lucide="shuffle" class="w-5 h-5"></i> Bốc số lấy hên </span>
+                <span class="flex items-center gap-2"><i data-lucide="shuffle" class="w-5 h-5"></i> Mua Lẻ (Random)</span>
                 <span class="bg-white/20 px-2 py-1 rounded text-sm font-mono" id="priceLabelRandom">10k</span>
             </button>
 
             <button onclick="chooseMode('manual')" class="w-full bg-yellow-400 hover:bg-yellow-500 text-red-900 font-bold py-3 rounded-lg shadow mb-6 flex justify-between items-center px-4 transition transform active:scale-95">
-                <span class="flex items-center gap-2"><i data-lucide="edit-3" class="w-5 h-5"></i> Làm chủ vận may</span>
+                <span class="flex items-center gap-2"><i data-lucide="edit-3" class="w-5 h-5"></i> Mua Lẻ (Tự chọn)</span>
                 <span class="bg-white/20 px-2 py-1 rounded text-sm font-mono" id="priceLabelManual">12k</span>
             </button>
             
@@ -194,7 +202,7 @@
                     <div class="mb-3"><input type="text" id="buyerName" class="w-full p-3 border border-gray-300 rounded outline-none" placeholder="Họ và Tên (*)"></div>
                     <div class="grid grid-cols-2 gap-3 mb-3">
                         <input type="tel" id="buyerPhone" class="w-full p-3 border border-gray-300 rounded outline-none" placeholder="SĐT (*)">
-                        <input type="email" id="buyerEmail" class="w-full p-3 border border-gray-300 rounded outline-none" placeholder="Email (*)">
+                        <input type="email" id="buyerEmail" class="w-full p-3 border border-gray-300 rounded outline-none" placeholder="Email (dùng mua Lanyard) (*)">
                     </div>
                 </div>
                 <div class="border-t pt-4 border-gray-100">
