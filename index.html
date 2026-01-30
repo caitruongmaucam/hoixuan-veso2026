@@ -47,9 +47,9 @@
         <!-- VIEW 0: WELCOME & LANYARD -->
         <div id="view-welcome" class="bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400 text-center animate-fade-in">
             <div class="mb-6 rounded-lg overflow-hidden border-2 border-red-200 shadow-sm">
-                <!-- THAY LINK ẢNH BANNER CỦA BẠN VÀO ĐÂY -->
-                <img src="<!-- Thay bằng tên file bạn vừa up lên -->
-<img src="./banner.png" alt="Banner Hội Xuân" class="w-full h-auto object-cover">
+                <!-- MÌNH ĐỂ TẠM ẢNH TẾT TỪ MẠNG, NẾU MUỐN THAY ẢNH CỦA BẠN HÃY DÁN LINK VÀO ĐÂY -->
+               <!-- Nhớ có dấu chấm và dấu gạch chéo ./ ở trước nhé -->
+<img src="./banner.PNG" alt="Banner" class="w-full h-auto object-cover">
             </div>
 
             <h2 class="text-xl font-bold text-red-800 mb-2 uppercase">Ưu đãi Hội Xuân</h2>
@@ -128,7 +128,7 @@
             </p>
         </div>
 
-        <!-- VIEW 2: QUANTITY & MANUAL INPUTS (Simplified Views) -->
+        <!-- VIEW 2: QUANTITY & MANUAL INPUTS -->
         <div id="view-quantity-random" class="hidden bg-white rounded-xl shadow-xl p-6 border-2 border-yellow-400">
             <button onclick="goHome()" class="text-gray-500 mb-4 flex items-center gap-1 text-sm"><i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại</button>
             <h2 class="text-xl font-bold text-red-700 text-center mb-2">Mua vé ngẫu nhiên</h2>
@@ -185,7 +185,6 @@
                <div class="bg-blue-50 p-4 rounded-lg text-sm text-blue-800 border border-blue-200">
                     <p class="font-bold mb-2 text-center text-red-600">👇 Quét mã QR bên dưới 👇</p>
                     <div class="flex justify-center mb-2">
-                        <!-- ẢNH QR CỦA BẠN (TỰ ĐỘNG HIỆN SỐ TIỀN) -->
                         <img id="vietqrImg" src="" alt="QR Code" class="w-48 rounded shadow-lg border-2 border-white">
                     </div>
                     <p class="text-center text-xs italic text-gray-500 mb-2">
@@ -227,7 +226,7 @@
 
     <script>
         // === DÁN LINK GOOGLE SCRIPT MỚI VÀO ĐÂY ===
-        const API_URL = "https://script.google.com/macros/s/AKfycby6MZjjvC1ibscbkAftfj2rLlzEi0JJMtXpj_kTjf1KJBOu-Tghfcr4XdgTzi2-5-OH/exec"; 
+        const API_URL = ""; 
 
         const PRICES = {
             noLanyard: { random: 10000, manual: 12000, tamtai: 30000, phatloc: 50000 },
@@ -240,7 +239,6 @@
         if (!API_URL) {
             console.log("Demo Mode");
             takenNumbers = ["111", "222"];
-            // MỒI KHÁCH: HIỆN SỐ ẢO
             document.getElementById('soldCount').innerText = takenNumbers.length + 50;
         } else {
             fetchTakenNumbers();
@@ -252,7 +250,6 @@
                 const data = await res.json();
                 if(data.status === 'success') {
                     takenNumbers = data.taken;
-                    // MỒI KHÁCH: CỘNG THÊM 50 VÉ ẢO
                     document.getElementById('soldCount').innerText = takenNumbers.length + 50;
                 }
             } catch (e) { document.getElementById('soldCount').innerText = "50+"; }
@@ -320,7 +317,6 @@
             document.getElementById('totalPrice').innerText = price.toLocaleString('vi-VN');
             document.getElementById('qrAmountText').innerText = price.toLocaleString('vi-VN');
             
-            // Cập nhật QR Code động với số tiền chính xác
             const qrContent = `MUA VE HOI XUAN`;
             document.getElementById('vietqrImg').src = `https://img.vietqr.io/image/vcb-9397453919-compact.png?amount=${price}&addInfo=${encodeURIComponent(qrContent)}`;
 
