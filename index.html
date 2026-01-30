@@ -215,7 +215,7 @@
                 </div>
 
                 <div class="mt-4 flex justify-center mb-2">
-                    <div class="g-recaptcha" data-sitekey="6LczYFssAAAAAAAH6GUyeAYj9WUP9ah1YxaWOnFdl9"></div>
+                    <div class="g-recaptcha" data-sitekey="6LefZ1ssAAAAAPRzmZerU5zoXiqrb864KOKnQdc_"></div>
                 </div>
 
                 <button id="btnSubmit" onclick="submitOrder()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-lg flex justify-center items-center gap-2 mt-4">
@@ -336,7 +336,6 @@
             switchView('checkout');
         }
 
-        // 3. HÀM GỬI FORM ĐÃ ĐƯỢC CẬP NHẬT ĐỂ CHECK CAPTCHA
         async function submitOrder() {
             const name = document.getElementById('buyerName').value;
             const phone = document.getElementById('buyerPhone').value;
@@ -377,11 +376,11 @@
                         document.getElementById('successCount').innerText = selectedNumbers.length; 
                         switchView('success'); 
                         fetchTakenNumbers();
-                        grecaptcha.reset(); // Reset captcha sau khi thành công
+                        grecaptcha.reset(); 
                     } 
                     else {
                         showStatus(d.message, 'error');
-                        grecaptcha.reset(); // Reset captcha nếu lỗi
+                        grecaptcha.reset(); 
                     }
                 } catch (e) { showStatus("Lỗi kết nối server", 'error'); }
                 document.getElementById('btnSubmit').innerHTML = '<i data-lucide="check-circle"></i> Xác Nhận & Mua Vé';
